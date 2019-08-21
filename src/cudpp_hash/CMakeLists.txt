@@ -53,6 +53,8 @@ set(GENCODE_SM13 -gencode=arch=compute_13,code=sm_13 -gencode=arch=compute_13,co
 set(GENCODE_SM20 -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_20,code=compute_20)
 set(GENCODE_SM30 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_30,code=compute_30)
 set(GENCODE_SM35 -gencode=arch=compute_35,code=sm_35 -gencode=arch=compute_35,code=compute_35)
+set(GENCODE_SM50 -gencode=arch=compute_50,code=sm_50 -gencode=arch=compute_50,code=compute_50)
+set(GENCODE_SM75 -gencode=arch=compute_75,code=sm_75 -gencode=arch=compute_75,code=compute_75)
 
 #set(GENCODE -gencode=arch=compute_10,code=compute_10) # at least generate PTX
 
@@ -70,7 +72,7 @@ set(GENCODE_SM35 -gencode=arch=compute_35,code=sm_35 -gencode=arch=compute_35,co
 
 option(CUDPP_GENCODE_SM30
        "ON to generate code for Compute Capability 3.0 devices (e.g. Tesla K10)"
-       ON)
+       OFF)
 
 option(CUDPP_GENCODE_SM35
        "ON to generate code for Compute Capability 3.5 devices (e.g. Tesla K20)"
@@ -79,6 +81,10 @@ option(CUDPP_GENCODE_SM35
 option(CUDPP_GENCODE_SM50
        "ON to generate code for Compute Capability 5.0 devices (e.g. GeForce GTX 750)"
        OFF)
+
+option(CUDPP_GENCODE_SM75
+    "ON to generate code for Compute Capability 7.5 devices (e.g. GeForce RTX 2080 Ti)"
+       ON)
 
 if (CUDPP_GENCODE_SM12)
   set(GENCODE ${GENCODE} ${GENCODE_SM12})
@@ -103,6 +109,10 @@ endif(CUDPP_GENCODE_SM35)
 if (CUDPP_GENCODE_SM50)
   set(GENCODE ${GENCODE} ${GENCODE_SM50})
 endif(CUDPP_GENCODE_SM50)
+
+if (CUDPP_GENCODE_SM75)
+  set(GENCODE ${GENCODE} ${GENCODE_SM75})
+endif(CUDPP_GENCODE_SM75)
 
 if (CUDA_VERBOSE_PTXAS)
   set(VERBOSE_PTXAS --ptxas-options=-v)
@@ -139,7 +149,7 @@ cuda_add_library(cudpp_hash ${LIB_TYPE}
   ${CUHFILES}
   ${HFILES_PUBLIC}
   ${CUFILES}
-  OPTIONS ${GENCODE_SM20} ${VERBOSE_PTXAS}
+  OPTIONS ${GENCODE} ${VERBOSE_PTXAS}
   )
 
 target_link_libraries(cudpp_hash cudpp)
